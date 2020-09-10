@@ -1,0 +1,15 @@
+#Supplementary Figure 3
+install.packages("glmnet")
+library(glmnet)
+training_features <- read.table("Supplementary Figure 3.csv", sep = ",", head = T,row.names=1)
+fitx <- as.matrix(training_features[,2:147])
+fity <- as.matrix(training_features[,1])
+fit <- glmnet(fitx,fity,family = "binomial")
+plot(fit,xvar = "lambda",label = TRUE)
+abline(v=-2.463, lty=2)
+
+set.seed(8008)
+cvfit <- cv.glmnet(fitx,fity,family="binomial",type.measure="deviance",nfolds=5)
+plot(cvfit)
+c(cvfit$lambda.min, cvfit$lambda.1se)
+coef(cvfit,s=c(cvfit$lambda.1se))
